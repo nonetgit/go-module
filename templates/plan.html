@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}План освежения СИЗ{% endblock %}
+{% block content %}
+<h2>План освежения СИЗ</h2>
+<p class="text-muted">
+  План сформирован автоматически на основе сроков годности СИЗ.
+</p>
+
+{% if not plan %}
+  <div class="alert alert-secondary">
+    Данные ещё не обработаны. Перейдите на страницу
+    <a href="/">Загрузка данных</a>.
+  </div>
+{% else %}
+
+  <div class="mb-3">
+    <a class="btn btn-success" href="/plan/export/xlsx">
+      Скачать план в Excel
+    </a>
+  </div>
+
+  <table class="table table-bordered table-sm">
+    <thead class="table-light">
+      <tr>
+        <th>Год</th><th>Наименование СИЗ</th>
+        <th>Кол-во, шт.</th>
+        <th>Цена, руб.</th><th>Сумма, руб.</th><th>Срок поставки</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in plan %}
+      <tr>
+        <td>{{ p.year }}</td><td>{{ p.name }}</td><td>{{ p.quantity }}</td>
+        <td>{{ p.unit_price }}</td><td>{{ p.total }}</td>
+        <td>{{ p.delivery }}</td>
+      </tr>
+      {% endfor %}
+      <tr class="table-light fw-bold">
+        <td colspan="4" class="text-end">Итого:</td>
+        <td colspan="2">{{ total }} руб.</td>
+      </tr>
+    </tbody>
+  </table>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}Загруженные данные{% endblock %}
+{% block content %}
+<h2>Загруженные данные</h2>
+
+{% if not integration_done %}
+  <div class="alert alert-secondary">
+    Данные ещё не загружены. Перейдите на страницу
+    <a href="/">Загрузка данных</a> и обработайте файлы.
+  </div>
+{% else %}
+
+<ul class="nav nav-tabs mb-3" id="dataTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" data-bs-toggle="tab"
+            data-bs-target="#tab-employees" type="button">
+      Сотрудники ({{ data.employees|length }})
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" data-bs-toggle="tab"
+            data-bs-target="#tab-siz" type="button">
+      СИЗ ({{ data.siz_cards|length }})
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" data-bs-toggle="tab"
+            data-bs-target="#tab-nfgo" type="button">
+      Формирования ({{ data.nfgo_members|length }})
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" data-bs-toggle="tab"
+            data-bs-target="#tab-training" type="button">
+      Обучение ({{ data.training|length }})
+    </button>
+  </li>
+</ul>
+
+<div class="tab-content">
+
+  {# ─── Сотрудники ─── #}
+  <div class="tab-pane fade show active" id="tab-employees">
+    <table class="table table-sm table-bordered table-striped">
+      <thead class="table-light">
+        <tr>
+          <th>Табельный №</th><th>ФИО</th><th>Подразделение</th>
+          <th>Должность</th><th>Размер</th><th>Статус</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in data.employees %}
+        <tr>
+          <td>{{ e.employee_id }}</td>
+          <td>{{ e.fio }}</td>
+          <td>{{ e.department }}</td>
+          <td>{{ e.position }}</td>
+          <td>{{ e.face_size }}</td>
+          <td>{{ e.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# ─── СИЗ ─── #}
+  <div class="tab-pane fade" id="tab-siz">
+    <table class="table table-sm table-bordered table-striped">
+      <thead class="table-light">
+        <tr>
+          <th>Код</th><th>Наименование</th><th>Партия</th>
+          <th>Кол-во</th><th>Место хранения</th>
+          <th>Дата изготовления</th><th>Срок годности</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in data.siz_cards %}
+        <tr>
+          <td>{{ s.siz_id }}</td>
+          <td>{{ s.name }}</td>
+          <td>{{ s.party_no }}</td>
+          <td>{{ s.quantity }}</td>
+          <td>{{ s.storage }}</td>
+          <td>{{ s.manufacture_date or '—' }}</td>
+          <td>{{ s.expiry_date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# ─── Формирования ─── #}
+  <div class="tab-pane fade" id="tab-nfgo">
+    <table class="table table-sm table-bordered table-striped">
+      <thead class="table-light">
+        <tr>
+          <th>Табельный №</th><th>ФИО</th>
+          <th>Подразделение</th><th>Формирование</th><th>Роль</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in data.nfgo_members %}
+        <tr>
+          <td>{{ m.employee_id }}</td>
+          <td>{{ m.fio }}</td>
+          <td>{{ m.department }}</td>
+          <td>{{ m.formation }}</td>
+          <td>{{ m.role }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# ─── Обучение ─── #}
+  <div class="tab-pane fade" id="tab-training">
+    <table class="table table-sm table-bordered table-striped">
+      <thead class="table-light">
+        <tr>
+          <th>Табельный №</th><th>ФИО</th>
+          <th>Тема</th><th>Часы</th><th>Результат</th><th>Дата</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in data.training %}
+        <tr>
+          <td>{{ t.employee_id }}</td>
+          <td>{{ t.fio }}</td>
+          <td>{{ t.topic }}</td>
+          <td>{{ t.hours }}</td>
+          <td>{{ t.result }}</td>
+          <td>{{ t.date or '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+{% endif %}
+{% endblock %}

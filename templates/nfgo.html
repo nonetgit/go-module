@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Отчёт по формированиям{% endblock %}
+{% block content %}
+<h2>Отчёт по формированиям</h2>
+<p class="text-muted">
+  Отчёт сформирован автоматически после обработки файлов.
+</p>
+
+{% if not report %}
+  <div class="alert alert-secondary">
+    Данные ещё не обработаны. Перейдите на страницу
+    <a href="/">Загрузка данных</a>.
+  </div>
+{% else %}
+
+  <div class="mb-3">
+    <a class="btn btn-success" href="/nfgo/export/xlsx">
+      Скачать отчёт в Excel
+    </a>
+  </div>
+
+  <h4>Состав формирований</h4>
+  <table class="table table-bordered table-sm">
+    <thead class="table-light">
+      <tr>
+        <th>№</th><th>Наименование</th><th>Вид</th>
+        <th>Код</th><th>Человек</th><th>Готовность, %</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for f in report.formations %}
+      <tr>
+        <td>{{ f.no }}</td><td>{{ f.name }}</td><td>{{ f.type }}</td>
+        <td>{{ f.mchs_code }}</td><td>{{ f.count }}</td>
+        <td>{{ f.readiness }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h4>Обеспеченность СИЗ</h4>
+  <table class="table table-bordered table-sm">
+    <thead class="table-light">
+      <tr>
+        <th>Наименование</th><th>Нужно, ед.</th><th>Есть, ед.</th>
+        <th>Годных</th><th>Обеспеченность, %</th><th>Освежение</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in report.equipment %}
+      <tr>
+        <td>{{ e.name }}</td><td>{{ e.required }}</td><td>{{ e.available }}</td>
+        <td>{{ e.serviceable }}</td>
+        <td class="{% if e.provision < 100 %}text-danger{% endif %}">
+          {{ e.provision }}
+        </td>
+        <td>{{ e.refresh_year }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h4>Подготовка сотрудников</h4>
+  <table class="table table-bordered table-sm">
+    <tbody>
+      <tr><td>Всего сотрудников</td><td>{{ report.training.planned }}</td></tr>
+      <tr><td>Прошли обучение</td><td>{{ report.training.fact }}</td></tr>
+      <tr><td>Дата последнего занятия</td>
+          <td>{{ report.training.last_training }}</td></tr>
+    </tbody>
+  </table>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Загрузка данных{% endblock %}
+{% block content %}
+<h2>Загрузка данных</h2>
+<p class="text-muted">
+  Выберите все файлы выгрузок сразу — система сама определит,
+  к какому разделу относится каждый файл.
+  Поддерживаются форматы: CSV, XLSX, JSON.
+</p>
+
+<form method="post" action="/integration/run" enctype="multipart/form-data">
+
+  <div class="card mb-3">
+    <div class="card-header">Файлы для загрузки</div>
+    <div class="card-body">
+      <input type="file" class="form-control form-control-lg"
+             name="files" accept=".csv,.xlsx,.json" multiple>
+      <small class="text-muted d-block mt-2">
+        Можно выбрать сразу все файлы: <code>Ctrl+A</code> в диалоге выбора.
+      </small>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <button class="btn btn-primary btn-lg" type="submit">
+      Обработать файлы
+    </button>
+    {% if integration_done %}
+      <span class="text-success ms-3">✓ Данные обработаны</span>
+    {% endif %}
+  </div>
+
+</form>
+
+{% if integration_done %}
+<form method="post" action="/integration/reset" class="mb-3">
+  <button class="btn btn-outline-secondary" type="submit">
+    Сбросить данные
+  </button>
+</form>
+{% endif %}
+
+<hr class="my-4">
+
+<h4>Результат обработки</h4>
+<div class="row">
+  <div class="col-md-3"><div class="card text-center"><div class="card-body">
+    <h3>{{ counts.employees }}</h3><small>Сотрудников</small>
+  </div></div></div>
+  <div class="col-md-3"><div class="card text-center"><div class="card-body">
+    <h3>{{ counts.siz }}</h3><small>Карточек СИЗ</small>
+  </div></div></div>
+  <div class="col-md-3"><div class="card text-center"><div class="card-body">
+    <h3>{{ counts.nfgo }}</h3><small>Участников формирований</small>
+  </div></div></div>
+  <div class="col-md-3"><div class="card text-center"><div class="card-body">
+    <h3>{{ counts.training }}</h3><small>Записей обучения</small>
+  </div></div></div>
+</div>
+
+{% if integration_done %}
+<div class="mt-4">
+  <a href="/data" class="btn btn-outline-primary">Посмотреть загруженные данные</a>
+  <a href="/nfgo" class="btn btn-outline-primary">Открыть отчёт по формированиям</a>
+  <a href="/plan" class="btn btn-outline-primary">Открыть план освежения СИЗ</a>
+</div>
+{% endif %}
+{% endblock %}
